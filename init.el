@@ -1,3 +1,7 @@
+;;; init.el --- -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
+
 (require 'package)
 
 (load-theme 'wombat t)
@@ -22,6 +26,13 @@
       inhibit-startup-screen t
       make-backup-files nil)
 
+(setq read-process-output-max (* 10 1024 1024)
+      gc-cons-threshold 200000000)
+
+(auto-save-visited-mode 1)
+
+(electric-pair-mode 1)
+
 (load "~/.emacs.d/packages.el")
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -35,3 +46,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :extend nil :stipple nil :background "#1d2021" :foreground "#ebdbb2" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 110 :width normal :foundry "ADBO" :family "Agave Nerd Font")))))
+
+;;; init.el ends here
