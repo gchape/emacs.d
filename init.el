@@ -1,7 +1,6 @@
 ;;; init.el --- -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
-
 (require 'package)
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -22,26 +21,12 @@
                   file-name-handler-alist last-file-name-handler-alist)))
 
 (setq frame-title-format "")
+
 (set-face-attribute 'default nil
 		    :font "CommitMono Nerd Font"
 		    :height 100)
 
-
-(load "~/.emacs.d/config/init-ui.el")
-
-(load "~/.emacs.d/config/init-org.el")
-
-(load "~/.emacs.d/config/init-web.el")
-
-(load "~/.emacs.d/config/init-lsp-mode.el")
-
-(load "~/.emacs.d/config/init-magit.el")
-(load "~/.emacs.d/config/init-corfu.el")
-(load "~/.emacs.d/config/init-vertico.el")
-(load "~/.emacs.d/config/init-neotree.el")
-(load "~/.emacs.d/config/init-flycheck.el")
-(load "~/.emacs.d/config/init-orderless.el")
-(load "~/.emacs.d/config/init-yasnippet.el")
+(load "~/.emacs.d/config.el")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -54,9 +39,6 @@
  '(make-backup-files nil)
  '(menu-bar-mode nil)
  '(package-selected-packages nil)
- '(package-vc-selected-packages
-   '((eglot-booster :url "https://github.com/jdtsmith/eglot-booster.git"
-		    :branch "main")))
  '(ring-bell-function 'ignore)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
@@ -68,5 +50,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
 ;;; init.el ends here
