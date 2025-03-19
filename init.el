@@ -35,10 +35,12 @@
  ;; If there is more than one, they won't work right.
  '(confirm-kill-processes nil)
  '(electric-pair-mode t)
- '(inhibit-startup-screen t)
  '(make-backup-files nil)
  '(menu-bar-mode nil)
+ '(org-agenda-files nil)
  '(package-selected-packages nil)
+ '(package-vc-selected-packages
+   '((pgmacs :url "https://github.com/emarsden/pgmacs.git" :branch "main")))
  '(ring-bell-function 'ignore)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)

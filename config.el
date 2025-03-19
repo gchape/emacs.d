@@ -6,25 +6,47 @@
   :config
   (load-theme 'solarized-dark t))
 
+(use-package all-the-icons
+  :ensure t)
+
+(use-package dashboard
+  :ensure t
+  :custom
+  (dashboard-startup-banner 3)
+  (dashboard-center-content t)
+  (dashboard-set-file-icons t)
+  (dashboard-navigation-cycle t)
+  (dashboard-icon-type 'all-the-icons)
+  (dashboard-items '((recents . 5)
+                     (bookmarks . 5)
+                     (projects . 5)))
+  :config
+  (dashboard-setup-startup-hook))
+
+(use-package centaur-tabs
+  :ensure t
+  :demand
+  :custom
+  (centaur-tabs-style "bar")
+  (centaur-tabs-set-icons t)
+  (centaur-tabs-set-bar 'left)
+  (centaur-tabs-set-close-button nil)
+  (centaur-tabs-gray-out-icons 'buffer)
+  (centaur-tabs-icon-type 'all-the-icons)
+  :config
+  (centaur-tabs-mode t)
+  :bind
+  ("C-<next>" . centaur-tabs-forward)
+  ("C-<prior>" . centaur-tabs-backward))
+
 (use-package mood-line
   :ensure t
   :hook (after-init . mood-line-mode)
   :config
   (mood-line-mode)
   :custom
-  (mood-line-glyph-alist mood-line-glyphs-fira-code)
-  (mood-line-format mood-line-format-default-extended))
-
-(use-package dashboard
-  :ensure t
-  :hook (after-init . dashboard-mode)
-  :config
-  (dashboard-setup-startup-hook)
-  (setq dashboard-banner-logo-title "Welcome to Emacs!")
-  (setq dashboard-startup-banner 'official)
-  (setq dashboard-items '((recents . 10)
-                          (bookmarks . 5)
-                          (projects . 5))))
+  (mood-line-format mood-line-format-default)
+  (mood-line-glyph-alist mood-line-glyphs-unicode))
 
 (use-package vertico
   :ensure t
@@ -106,7 +128,6 @@
 
 (use-package neotree
   :ensure t
-  :hook (after-init . neotree-mode)
   :config
   (setq neo-window-width 20)
   (setq neo-smart-open t)
@@ -188,8 +209,8 @@
   :after lsp-mode
   :config
   (setq lsp-ui-peek-enable t)
-  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
+  (define-key lsp-ui-mode-map (kbd "M-.") #'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map (kbd "M-?") #'lsp-ui-peek-find-references))
 
 (defun lsp-booster--advice-json-parse (old-fn &rest args)
   "Try to parse bytecode (OLD-FN ARGS) instead of JSON."
@@ -244,20 +265,14 @@
   
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((js . t)
-     (ts . t))))
-
-(use-package org-modern
-  :ensure t
-  :hook
-  ((org-mode . org-modern-mode)
-   (org-agenda-finalize . org-modern-agenda)))
-
-(use-package org-preview-html
-  :ensure t
-  :after org)
+   '((js . t))))
 
 (use-package magit
   :ensure t
   :defer t)
+
+(use-package pgmacs
+  :defer t
+  :vc (:url https://github.com/emarsden/pgmacs.git
+	    :branch "main"))
 ;;; config.el ends here
