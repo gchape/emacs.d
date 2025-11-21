@@ -254,25 +254,4 @@
   (flycheck-help-echo-function nil)
   (flycheck-display-errors-delay 0.0)
   (flycheck-auto-display-errors-after-checking t))
-
-(use-package org
-  :ensure t
-  :defer t
-  :config
-  (setq org-startup-indented t
-        org-hide-emphasis-markers t
-        org-agenda-files '("~/org/"))
-  
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((js . t))))
-
-(use-package magit
-  :ensure t
-  :defer t)
-
-(use-package pgmacs
-  :defer t
-  :vc (:url https://github.com/emarsden/pgmacs.git
-	    :branch "main"))
 ;;; config.el ends here
