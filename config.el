@@ -1,6 +1,8 @@
 ;;; config.el --- -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
+(remove-hook 'prog-mode-hook 'flymake-mode)
+
 (use-package solarized-theme
   :ensure t
   :config
@@ -8,6 +10,13 @@
 
 (use-package all-the-icons
   :ensure t)
+
+(use-package mood-line
+  :ensure t
+  :hook (after-init . mood-line-mode)
+  :custom
+  (mood-line-format mood-line-format-default)
+  (mood-line-glyph-alist mood-line-glyphs-unicode))
 
 (use-package dashboard
   :ensure t
@@ -25,7 +34,6 @@
 
 (use-package centaur-tabs
   :ensure t
-  :demand
   :custom
   (centaur-tabs-style "bar")
   (centaur-tabs-set-icons t)
@@ -33,25 +41,15 @@
   (centaur-tabs-set-close-button nil)
   (centaur-tabs-gray-out-icons 'buffer)
   (centaur-tabs-icon-type 'all-the-icons)
-  :config
-  (centaur-tabs-mode t)
   :bind
   ("C-<next>" . centaur-tabs-forward)
-  ("C-<prior>" . centaur-tabs-backward))
-
-(use-package mood-line
-  :ensure t
-  :hook (after-init . mood-line-mode)
+  ("C-<prior>" . centaur-tabs-backward)
   :config
-  (mood-line-mode)
-  :custom
-  (mood-line-format mood-line-format-default)
-  (mood-line-glyph-alist mood-line-glyphs-unicode))
+  (centaur-tabs-mode t))
 
 (use-package vertico
   :ensure t
   :hook (after-init . vertico-mode)
-  :init (vertico-mode)
   :custom
   (vertico-count 8)
   (vertico-cycle t)
@@ -68,31 +66,26 @@
 
 (use-package corfu
   :ensure t
-  :hook ((org-mode
-          js2-mode
-          css-mode
-          json-mode
-          html-mode
-          emacs-lisp-mode
-          typescript-mode) . corfu-mode)
+  :hook (prog-mode . corfu-mode)
   :custom
   (corfu-auto t)
-  (corfu-info t)
   (corfu-cycle t)
   (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.0)
-  (corfu-preselect 'first)
-  (corfu-preview-current 'insert)
-  (corfu-completion-styles '(orderless))
-  (text-mode-ispell-word-completion . nil)
-  :config
-  (keymap-unset corfu-map "RET")
+  (corfu-auto-delay 0.1)
+  (corfu-preselect 'prompt)
+  (corfu-popupinfo-delay '(0.5 . 0.2))
   :bind
   (:map corfu-map
         ("TAB" . corfu-insert)
         ([tab] . corfu-insert)
-        ("ESC" . corfu-quit)
-        ([esc] . corfu-quit)))
+        ("C-g" . corfu-quit)
+        ("M-<f12>" . corfu-popupinfo-toggle)
+        ("C-S-p" . corfu-popupinfo-scroll-down)
+        ("C-S-n" . corfu-popupinfo-scroll-up))
+  :config
+  (keymap-unset corfu-map "RET")
+  (keymap-unset corfu-map "ESC")
+  (corfu-popupinfo-mode 1))
 
 (use-package kind-icon
   :ensure t
@@ -102,29 +95,14 @@
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
-(use-package js2-mode
+(use-package super-save
   :ensure t
-  :mode ("\\.js\\'"))
-
-(use-package typescript-mode
-  :ensure t
-  :mode ("\\.ts\\'"))
-
-(use-package json-mode
-  :ensure t
-  :mode ("\\.json\\'"))
+  :config
+  (super-save-mode +1))
 
 (use-package yasnippet
   :ensure t
   :init (yas-global-mode))
-
-(use-package prettier
-  :ensure t
-  :hook ((css-mode
-          js2-mode
-          html-mode
-          json-mode
-          typescript-mode) . prettier-mode))
 
 (use-package neotree
   :ensure t
@@ -143,115 +121,56 @@
                     (interactive)
                     (neotree-dir (read-directory-name "Directory: ")))))
 
-(use-package emmet-mode
+(use-package clojure-mode
   :ensure t
-  :hook ((html-mode . emmet-mode)
-	 (css-mode . emmet-mode))
-  :config
-  (setq emmet-indentation 2
-        emmet-indent-after-insert nil)
-  :bind
-  (:map emmet-mode-keymap
-        ([tab] . emmet-expand-line)
-        ("TAB" . emmet-expand-line)))
-
-(use-package lsp-mode
-  :hook ((css-mode
-	  js2-mode
-	  html-mode
-	  json-mode
-	  java-mode
-	  typescript-mode) . lsp-deferred)
-  :commands lsp lsp-deferred
   :custom
-  (lsp-log-io nil)
-  (lsp-keep-workspace-alive nil)
-  (lsp-semantic-tokens-enable nil)
-  (lsp-session-file "~/.emacs.d/.lsp-session-v1")
-  
-  (lsp-enable-xref t)
-  (lsp-enable-links t)
-  (lsp-enable-imenu nil)
-  (lsp-enable-indentation nil)
-  (lsp-eldoc-enable-hover nil)
-  (lsp-enable-file-watchers nil)
-  (lsp-enable-symbol-highlighting t)
-  (lsp-enable-on-type-formatting nil)
-  (lsp-enable-text-document-color nil)
-  (lsp-enable-suggest-server-download t)
+  (clojure-indent-style 'always-indent)
+  (clojure-indent-keyword-style 'always-indent)
+  (clojure-enable-indent-specs nil))
 
-  (lsp-ui-doc-enable nil)
-  (lsp-ui-sideline-delay 0)
-  (lsp-ui-sideline-show-hover nil)
-  (lsp-ui-sideline-update-mode 'line)
-  (lsp-ui-sideline-diagnostic-max-lines 20)
-  
-  (lsp-signature-auto-activate nil)
-  (lsp-signature-render-documentation nil)
+(use-package eglot
+  :hook (((clojure-mode clojurec-mode clojurescript-mode) . eglot-ensure))
+  :custom
+  (eglot-autoshutdown t)
+  (eglot-events-buffer-size 0)
+  (eglot-extend-to-xref nil)
+  (eglot-ignored-server-capabilities
+   '(:hoverProvider
+     :documentHighlightProvider
+     :documentFormattingProvider
+     :documentRangeFormattingProvider
+     :documentOnTypeFormattingProvider
+     :colorProvider
+     :foldingRangeProvider))
+  (eglot-stay-out-of '(yasnippet eldoc)))
 
-  (lsp-modeline-diagnostics-enable nil)
-  (lsp-modeline-code-actions-enable nil)
-  (lsp-modeline-workspace-status-enable nil)
-  
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-headerline-breadcrumb-icons-enable nil)
-  (lsp-headerline-breadcrumb-enable-diagnostics nil)
-  (lsp-headerline-breadcrumb-enable-symbol-numbers nil)
-  
-  (lsp-completion-show-kind t)
-  (lsp-completion-provider :none)
-  (lsp-diagnostics-provider :flycheck)
-  :init
-  (setq lsp-use-plists t))
-
-(use-package lsp-ui
-  :ensure t
-  :after lsp-mode
-  :config
-  (setq lsp-ui-peek-enable t)
-  (define-key lsp-ui-mode-map (kbd "M-.") #'lsp-ui-peek-find-definitions)
-  (define-key lsp-ui-mode-map (kbd "M-?") #'lsp-ui-peek-find-references))
-
-(defun lsp-booster--advice-json-parse (old-fn &rest args)
-  "Try to parse bytecode (OLD-FN ARGS) instead of JSON."
-  (or
-   (when (equal (following-char) ?#)
-     (let ((bytecode (read (current-buffer))))
-       (when (byte-code-function-p bytecode)
-         (funcall bytecode))))
-   (apply old-fn args)))
-
-(advice-add (if (progn (require 'json)
-                       (fboundp 'json-parse-buffer))
-                'json-parse-buffer
-              'json-read)
-            :around
-            #'lsp-booster--advice-json-parse)
-
-(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  "Prepend emacs-lsp-booster command (OLD-FN TEST?) to LSP CMD."
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)
-             (not (file-remote-p default-directory))
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))
-             (executable-find "emacs-lsp-booster"))
-        (progn
-          (when-let ((command-from-exec-path (executable-find (car orig-result))))
-            (setcar orig-result command-from-exec-path))
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" orig-result))
-      orig-result)))
-
-(advice-add 'lsp-resolve-final-command
-	    :around
-	    #'lsp-booster--advice-final-command)
+(add-hook 'eglot-managed-mode-hook
+          (lambda ()
+            (setq eldoc-documentation-functions
+                  (cons #'flymake-eldoc-function
+                        (remove #'flymake-eldoc-function eldoc-documentation-functions)))
+            (setq eldoc-documentation-strategy #'eldoc-documentation-enthusiast)))
 
 (use-package flycheck
   :ensure t
   :hook (after-init . global-flycheck-mode)
   :custom
-  (flycheck-help-echo-function nil)
+  (flycheck-check-syntax-automatically '(mode-enabled save))
   (flycheck-display-errors-delay 0.0)
-  (flycheck-auto-display-errors-after-checking t))
+  (flycheck-display-errors-function nil)
+  (flycheck-help-echo nil)
+  :bind
+  (:map flycheck-mode-map
+        ("M-g n" . flycheck-next-error)
+        ("M-g p" . flycheck-previous-error)
+        ("M-g d" . flycheck-list-errors)))
+
+(use-package cider
+  :ensure t
+  :after clojure-mode
+  :hook (cider-repl-mode . corfu-mode)
+  :custom
+  (cider-use-tooltips nil)
+  (cider-docstring-max-lines 0)
+  (cider-eldoc-display-for-symbol-at-point nil))
 ;;; config.el ends here

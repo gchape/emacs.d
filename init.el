@@ -24,7 +24,7 @@
 
 (set-face-attribute 'default nil
 		    :font "CommitMono Nerd Font"
-		    :height 100)
+		    :height 105)
 
 (load "~/.emacs.d/config.el")
 
@@ -37,7 +37,11 @@
  '(electric-pair-mode t)
  '(make-backup-files nil)
  '(menu-bar-mode nil)
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(all-the-icons centaur-tabs check cider corfu dashboard eldoc-box
+		   kind-icon mood-line neotree orderless
+		   sideline-flycheck sideline-flymake solarized-theme
+		   super-save vertico yasnippet))
  '(ring-bell-function 'ignore)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
