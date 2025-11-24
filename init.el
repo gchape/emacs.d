@@ -20,6 +20,7 @@
                   gc-cons-percentage 0.1
                   file-name-handler-alist last-file-name-handler-alist)))
 
+(setq create-lockfiles nil)
 (setq frame-title-format "")
 
 (set-face-attribute 'default nil
@@ -37,11 +38,7 @@
  '(electric-pair-mode t)
  '(make-backup-files nil)
  '(menu-bar-mode nil)
- '(package-selected-packages
-   '(all-the-icons centaur-tabs check cider corfu dashboard eldoc-box
-		   kind-icon mood-line neotree orderless
-		   sideline-flycheck sideline-flymake solarized-theme
-		   super-save vertico yasnippet))
+ '(package-selected-packages nil)
  '(ring-bell-function 'ignore)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
