@@ -27,6 +27,36 @@
 		    :font "CommitMono Nerd Font"
 		    :height 105)
 
+(setopt mode-line-format
+        '("%e"
+          mode-line-front-space
+          mode-line-client
+          mode-line-modified
+          mode-line-remote
+          mode-line-window-dedicated
+          mode-line-frame-identification
+          mode-line-buffer-identification
+          "   "
+          mode-line-position
+          mode-line-format-right-align
+          (project-mode-line project-mode-line-format)
+          (vc-mode vc-mode)
+          "  "
+          mode-line-modes
+          mode-line-misc-info
+          "  "
+          mode-line-end-spaces))
+(setopt mode-line-modified
+        '((:eval (if buffer-read-only "R" ""))
+          (:propertize
+           (:eval (if (buffer-modified-p) "×" "")) face error)))
+(setopt mode-line-modes (remove "(" (remove ")" mode-line-modes)))
+(setopt mode-line-position-column-line-format '("%l:%c"))
+(setopt mode-line-position-line-format '("L%l"))
+(setopt mode-line-remote
+        '(:eval (if (file-remote-p default-directory) "☎" "")))
+(setopt mode-line-right-align-edge 'window)
+
 (load "~/.emacs.d/config.el")
 
 (custom-set-variables

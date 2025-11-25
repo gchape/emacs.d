@@ -2,6 +2,8 @@
 ;;; Commentary:
 ;;; Optimized for faster startup and better performance
 ;;; Code:
+(load-theme 'modus-vivendi-deuteranopia)
+
 (setq inhibit-compacting-font-caches t)
 (setq gc-cons-threshold (* 100 1024 1024))
 (add-hook 'emacs-startup-hook
@@ -11,13 +13,6 @@
 (use-package all-the-icons
   :ensure t
   :defer t)
-
-(use-package mood-line
-  :ensure t
-  :hook (after-init . mood-line-mode)
-  :custom
-  (mood-line-format mood-line-format-default)
-  (mood-line-glyph-alist mood-line-glyphs-unicode))
 
 (use-package dashboard
   :ensure t
