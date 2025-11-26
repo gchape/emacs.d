@@ -162,6 +162,14 @@
                           #'eldoc-documentation-compose-eagerly)))
   (fset #'jsonrpc--log-event #'ignore))
 
+(use-package eglot-booster
+  :vc (:url "https://github.com/jdtsmith/eglot-booster")
+  :after eglot
+  :custom
+  (eglot-booster-io-only t)
+  :config
+  (eglot-booster-mode))
+
 (use-package cider
   :ensure t
   :defer t
