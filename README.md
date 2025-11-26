@@ -13,15 +13,20 @@ Before using this configuration, ensure you have the following installed:
 
 ![Screenshot\_20250319\_204459](https://github.com/user-attachments/assets/560ae00a-bfaa-4cdd-9fab-0903ed9ddc24)
 
+---
+
 ## Included Packages
 
 ### UI Enhancements
 
-* **[solarized-theme](https://github.com/bbatsov/solarized-emacs)** – A popular Solarized color theme
+* **Custom Mode Line** – Replaced `mood-line` and `centaur-tabs` with a personalized mode line configuration, including:
+
+  * simplified display of modified buffers (`×`) and read-only buffers (`R`)
+  * remote file indicator (`☎`)
+  * customized position format (`Lline:column`)
+  * project and VC info integrated
 * **[all-the-icons](https://github.com/domtronn/all-the-icons.el)** – Icons for various UI elements
-* **[dashboard](https://github.com/emacs-dashboard/emacs-dashboard)** – A startup dashboard with recent files, bookmarks, and projects
-* **[centaur-tabs](https://github.com/ema2159/centaur-tabs)** – Tab-based buffer navigation
-* **[mood-line](https://github.com/jordanbaird/mood-line)** – A minimal and modern mode line
+* **[dashboard](https://github.com/emacs-dashboard/emacs-dashboard)** – Startup dashboard with recent files, bookmarks, and projects
 
 ### Completion & Navigation
 
@@ -32,10 +37,11 @@ Before using this configuration, ensure you have the following installed:
 
 ### Clojure Development
 
-* **[eglot](https://github.com/joaotavora/eglot)** – LSP client for Clojure (Clojure-specific LSP support)
+* **[eglot](https://github.com/joaotavora/eglot)** – LSP client for Clojure
+* **[eglot-booster](https://github.com/jdtsmith/eglot-booster)** – Rust-based booster for faster LSP communication, configured with IO-only mode (`eglot-booster-io-only = t`)
 * **[cider](https://github.com/clojure-emacs/cider)** – REPL and interactive Clojure development tools
 * **[clojure-mode](https://github.com/emacs-mirror/clojure-mode)** – Major mode for editing Clojure code
-* **[flycheck](https://www.flycheck.org/)** – On-the-fly syntax checking for Clojure
+* **[flycheck](https://www.flycheck.org/)** – On-the-fly syntax checking
 
 ### Code Snippets & Formatting
 
@@ -43,21 +49,21 @@ Before using this configuration, ensure you have the following installed:
 
 ### File Management
 
-* **[neotree](https://github.com/jaypei/emacs-neotree)** – A tree-style file explorer
-
-### Removed Packages
-
-* **[js2-mode](https://github.com/mooz/js2-mode)** – JavaScript editing mode (removed)
-* **[typescript-mode](https://github.com/emacs-typescript/typescript.el)** – TypeScript editing mode (removed)
-* **[json-mode](https://github.com/joshwnj/json-mode)** – JSON file editing (removed)
-* **[prettier](https://github.com/jscheid/prettier.el)** – Code formatter for JavaScript, TypeScript, CSS, JSON (removed)
-* **[emmet-mode](https://github.com/smihica/emmet-mode)** – Abbreviations for HTML and CSS (removed)
-* **[lsp-mode](https://github.com/emacs-lsp/lsp-mode)** – Language Server Protocol support (removed in favor of `eglot`)
+* **[neotree](https://github.com/jaypei/emacs-neotree)** – Tree-style file explorer
 
 ---
 
-### Summary of Changes:
+### Removed Packages
 
-* **Removed Web Development Packages**: All packages related to web development (like `js2-mode`, `typescript-mode`, `json-mode`, `prettier`, `emmet-mode`) have been removed.
-* **Removed Version Control and Database Tools**: Removed **Magit** for Git integration and **pgmacs** for PostgreSQL tools.
-* **Focused on Clojure**: The configuration is now optimized specifically for Clojure development, with **eglot**, **cider**, and **clojure-mode** as the core tools for Clojure programming.
+* **[mood-line](https://github.com/jordanbaird/mood-line)** – Removed in favor of custom mode line
+* **[centaur-tabs](https://github.com/ema2159/centaur-tabs)** – Removed tab-based buffer navigation
+* **Web Development Packages**: `js2-mode`, `typescript-mode`, `json-mode`, `prettier`, `emmet-mode`
+* **Other Tools**: `lsp-mode`, `magit`, `pgmacs`
+
+---
+
+### Summary of Changes
+
+* **Custom Mode Line**: Simplified, readable, and optimized for Clojure workflow; replaced `mood-line` and `centaur-tabs`.
+* **Boosted LSP Performance**: Enabled `eglot-booster` with IO-only mode for faster JSON parsing in Emacs 30+.
+* **Focused on Clojure**: Removed web development and other unrelated packages to streamline the configuration.
