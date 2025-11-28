@@ -9,9 +9,9 @@ Before using this configuration, ensure you have the following installed:
 * **[Commit Nerd Font](https://www.programmingfonts.org/#commit-mono)** – My default font face
 * **[lsp-booster](https://github.com/blahgeek/emacs-lsp-booster)** – Performance booster for `lsp-mode` (optional, for better LSP performance)
 
-![Screenshot\_20250319\_204422](https://github.com/user-attachments/assets/ee82acda-4afe-4d9a-88c9-dea6e89287ea)
+<img width="1007" height="891" alt="image" src="https://github.com/user-attachments/assets/670ae5ea-6cf6-4c0d-8767-3543ff6f2dad" />
 
-![Screenshot\_20250319\_204459](https://github.com/user-attachments/assets/560ae00a-bfaa-4cdd-9fab-0903ed9ddc24)
+<img width="1007" height="891" alt="image" src="https://github.com/user-attachments/assets/f46b5f7f-2e80-44eb-9897-b285dd1b0420" />
 
 ---
 
