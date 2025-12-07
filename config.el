@@ -2,8 +2,7 @@
 ;;; Commentary:
 ;;; Optimized for faster startup and better performance
 ;;; Code:
-
-(load-theme 'modus-vivendi-tinted)
+(load-theme 'modus-operandi-tinted)
 
 (setq inhibit-compacting-font-caches t)
 (setq gc-cons-threshold (* 100 1024 1024))
@@ -63,7 +62,7 @@
   (corfu-cycle t)
   (corfu-auto-prefix 2)
   (corfu-auto-delay 0.1)
-  (corfu-preselect 'first)
+  (corfu-preselect-first t)
   (corfu-popupinfo-delay '(0.5 . 0.2))
   (corfu-quit-no-match 'separator)
   :init
@@ -75,9 +74,7 @@
         ("TAB"     . corfu-insert)
         ([tab]     . corfu-insert)
         ("C-g"     . corfu-quit)
-        ("M-<f12>" . corfu-popupinfo-toggle)
-        ("C-S-p"   . corfu-popupinfo-scroll-down)
-        ("C-S-n"   . corfu-popupinfo-scroll-up)))
+        ("M-<f12>" . corfu-popupinfo-toggle)))
 
 (use-package kind-icon
   :ensure t
@@ -176,13 +173,15 @@
   :ensure t
   :defer t
   :hook (cider-mode . (lambda ()
-                       (add-hook 'before-save-hook 'cider-format-buffer nil t)
-                       (remove-hook 'eldoc-documentation-functions #'cider-eldoc t)
-                       (setq-local eldoc-documentation-functions
-                                   (cons #'flymake-eldoc-function
-                                         (remove #'flymake-eldoc-function eldoc-documentation-functions)))
-                       (advice-add 'cider-eldoc :override #'ignore)
-                       (fset 'cider-class-choice-completing-read (lambda () nil))))
+                        (add-hook 'before-save-hook 'cider-format-buffer nil t)
+                        (remove-hook 'eldoc-documentation-functions #'cider-eldoc t)
+                        (setq-local eldoc-documentation-functions
+                                    (cons #'flymake-eldoc-function
+                                          (remove #'flymake-eldoc-function eldoc-documentation-functions)))
+                        (setq-local eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+                        (setq-local completion-at-point-functions
+                                    (remq #'cider-complete-at-point completion-at-point-functions))
+                        (fset 'cider-class-choice-completing-read (lambda () nil))))
   :custom
   (cider-repl-display-help-banner nil)
   (cider-repl-pop-to-buffer-on-connect nil)
@@ -192,7 +191,8 @@
   (cider-use-xref t)
   (cider-use-tooltips nil)
   (cider-save-file-on-load t)
+  (cider-annotate-completion-candidates nil)
+  (cider-completion-annotations-alist nil)
   (nrepl-hide-special-buffers t)
   (nrepl-log-messages nil))
-
 ;;; config.el ends here
