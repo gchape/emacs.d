@@ -2,7 +2,8 @@
 ;;; Commentary:
 ;;; Optimized for faster startup and better performance
 ;;; Code:
-(load-theme 'modus-vivendi-deuteranopia)
+
+(load-theme 'modus-vivendi-tinted)
 
 (setq inhibit-compacting-font-caches t)
 (setq gc-cons-threshold (* 100 1024 1024))
@@ -65,6 +66,10 @@
   (corfu-preselect 'first)
   (corfu-popupinfo-delay '(0.5 . 0.2))
   (corfu-quit-no-match 'separator)
+  :init
+  (global-corfu-mode)
+  (corfu-indexed-mode)
+  (corfu-popupinfo-mode)
   :bind
   (:map corfu-map
         ("TAB"     . corfu-insert)
@@ -72,10 +77,7 @@
         ("C-g"     . corfu-quit)
         ("M-<f12>" . corfu-popupinfo-toggle)
         ("C-S-p"   . corfu-popupinfo-scroll-down)
-        ("C-S-n"   . corfu-popupinfo-scroll-up))
-  :config
-  (global-corfu-mode)
-  (corfu-popupinfo-mode 1))
+        ("C-S-n"   . corfu-popupinfo-scroll-up)))
 
 (use-package kind-icon
   :ensure t
@@ -157,7 +159,7 @@
               (setq-local eldoc-documentation-functions
                           (cons #'flymake-eldoc-function
                                 (remove #'flymake-eldoc-function
-                                        eldoc-documentation-functions)))
+                                        eldoc-documentation-functions)))  
               (setq-local eldoc-documentation-strategy
                           #'eldoc-documentation-compose-eagerly)))
   (fset #'jsonrpc--log-event #'ignore))
@@ -173,20 +175,24 @@
 (use-package cider
   :ensure t
   :defer t
-  :hook ((cider-repl-mode . corfu-mode)
-         (cider-mode . (lambda ()
-                         (add-hook 'before-save-hook
-                                   'cider-format-buffer nil t))))
+  :hook (cider-mode . (lambda ()
+                       (add-hook 'before-save-hook 'cider-format-buffer nil t)
+                       (remove-hook 'eldoc-documentation-functions #'cider-eldoc t)
+                       (setq-local eldoc-documentation-functions
+                                   (cons #'flymake-eldoc-function
+                                         (remove #'flymake-eldoc-function eldoc-documentation-functions)))
+                       (advice-add 'cider-eldoc :override #'ignore)
+                       (fset 'cider-class-choice-completing-read (lambda () nil))))
   :custom
   (cider-repl-display-help-banner nil)
   (cider-repl-pop-to-buffer-on-connect nil)
   (cider-show-error-buffer 'only-in-repl)
   (cider-font-lock-dynamically '(macro core function var))
+  (cider-eldoc-display-context nil)
   (cider-use-xref t)
-  (cider-use-tooltips t)
-  (cider-docstring-max-lines 20)
-  (cider-eldoc-display-for-symbol-at-point nil)
+  (cider-use-tooltips nil)
   (cider-save-file-on-load t)
   (nrepl-hide-special-buffers t)
   (nrepl-log-messages nil))
+
 ;;; config.el ends here
