@@ -2,6 +2,8 @@
 
 Single-branch modular design. No more separate branches for different setups—just toggle modules in `init.el`.
 
+<img width="2742" height="1721" alt="image" src="https://github.com/user-attachments/assets/9ad15fb8-c332-45e9-a8f2-190314c3d80d" />
+
 Post-install:
 1. Launch Emacs (packages auto-install)
 2. `M-x all-the-icons-install-fonts`
