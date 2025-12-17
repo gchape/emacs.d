@@ -1,257 +1,198 @@
-;;; config.el --- -*- lexical-binding: t; -*-
+;;; config.el --- Optimized Emacs configuration -*- lexical-binding: t; -*-
 ;;; Commentary:
+;;; Optimized for faster startup and better performance
 ;;; Code:
-(use-package solarized-theme
-  :ensure t
-  :config
-  (load-theme 'solarized-dark t))
+(load-theme 'modus-operandi-tinted)
+
+(setq inhibit-compacting-font-caches t)
+(setq gc-cons-threshold (* 100 1024 1024))
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold (* 20 1024 1024))))
 
 (use-package all-the-icons
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (use-package dashboard
   :ensure t
+  :demand t
   :custom
   (dashboard-startup-banner 3)
   (dashboard-center-content t)
   (dashboard-set-file-icons t)
   (dashboard-navigation-cycle t)
   (dashboard-icon-type 'all-the-icons)
-  (dashboard-items '((recents . 5)
+  (dashboard-items '((recents   . 5)
                      (bookmarks . 5)
-                     (projects . 5)))
+                     (projects  . 5)))
   :config
   (dashboard-setup-startup-hook))
 
-(use-package centaur-tabs
+(use-package vim-tab-bar
   :ensure t
-  :demand
-  :custom
-  (centaur-tabs-style "bar")
-  (centaur-tabs-set-icons t)
-  (centaur-tabs-set-bar 'left)
-  (centaur-tabs-set-close-button nil)
-  (centaur-tabs-gray-out-icons 'buffer)
-  (centaur-tabs-icon-type 'all-the-icons)
-  :config
-  (centaur-tabs-mode t)
-  :bind
-  ("C-<next>" . centaur-tabs-forward)
-  ("C-<prior>" . centaur-tabs-backward))
-
-(use-package mood-line
-  :ensure t
-  :hook (after-init . mood-line-mode)
-  :config
-  (mood-line-mode)
-  :custom
-  (mood-line-format mood-line-format-default)
-  (mood-line-glyph-alist mood-line-glyphs-unicode))
+  :commands vim-tab-bar-mode
+  :hook
+  (after-init . vim-tab-bar-mode))
 
 (use-package vertico
   :ensure t
-  :hook (after-init . vertico-mode)
-  :init (vertico-mode)
+  :demand t
   :custom
-  (vertico-count 8)
+  (vertico-scroll-margin 0)
+  (vertico-resize t)
   (vertico-cycle t)
-  (vertico-resize nil)
-  (vertico-scroll-margin 0))
+  :init
+  (vertico-mode))
 
 (use-package orderless
   :ensure t
-  :after vertico
+  :defer t
   :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion))))
   (completion-category-defaults nil)
-  (completion-styles '(orderless partial-completion))
-  (completion-category-overrides '((file (styles . (partial-completion))))))
+  (completion-pcm-leading-wildcard t))
 
 (use-package corfu
   :ensure t
-  :hook ((org-mode
-          js2-mode
-          css-mode
-          json-mode
-          html-mode
-          emacs-lisp-mode
-          typescript-mode) . corfu-mode)
+  :hook (prog-mode . corfu-mode)
   :custom
   (corfu-auto t)
-  (corfu-info t)
   (corfu-cycle t)
   (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.0)
-  (corfu-preselect 'first)
-  (corfu-preview-current 'insert)
-  (corfu-completion-styles '(orderless))
-  (text-mode-ispell-word-completion . nil)
-  :config
-  (keymap-unset corfu-map "RET")
+  (corfu-auto-delay 0.1)
+  (corfu-preselect-first t)
+  (corfu-popupinfo-delay '(0.5 . 0.2))
+  (corfu-quit-no-match 'separator)
+  :init
+  (global-corfu-mode)
+  (corfu-indexed-mode)
+  (corfu-popupinfo-mode)
   :bind
   (:map corfu-map
-        ("TAB" . corfu-insert)
-        ([tab] . corfu-insert)
-        ("ESC" . corfu-quit)
-        ([esc] . corfu-quit)))
+        ("TAB"     . corfu-insert)
+        ([tab]     . corfu-insert)
+        ("C-g"     . corfu-quit)
+        ("M-<f12>" . corfu-popupinfo-toggle)))
 
 (use-package kind-icon
   :ensure t
   :after corfu
   :custom
   (kind-icon-use-icons nil)
+  (kind-icon-default-face 'corfu-default)
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
-(use-package js2-mode
+(use-package super-save
   :ensure t
-  :mode ("\\.js\\'"))
-
-(use-package typescript-mode
-  :ensure t
-  :mode ("\\.ts\\'"))
-
-(use-package json-mode
-  :ensure t
-  :mode ("\\.json\\'"))
+  :hook (after-init . super-save-mode)
+  :custom
+  (super-save-auto-save-when-idle t)
+  (super-save-idle-duration 5))
 
 (use-package yasnippet
   :ensure t
-  :init (yas-global-mode))
-
-(use-package prettier
-  :ensure t
-  :hook ((css-mode
-          js2-mode
-          html-mode
-          json-mode
-          typescript-mode) . prettier-mode))
+  :hook (prog-mode . yas-minor-mode)
+  :custom
+  (yas-verbosity 1)
+  :config
+  (yas-reload-all))
 
 (use-package neotree
   :ensure t
-  :config
-  (setq neo-window-width 20)
-  (setq neo-smart-open t)
-  (setq neo-theme 'ascii)
-  
-  (define-key neotree-mode-map (kbd "n") 'neotree-create-node)
-  (define-key neotree-mode-map (kbd "d") 'neotree-delete-node)
-  (define-key neotree-mode-map (kbd "r") 'neotree-rename-node)
-  (define-key neotree-mode-map (kbd "c") 'neotree-copy-node)
-  
-  (global-set-key (kbd "C-x n")
-                  (lambda ()
-                    (interactive)
-                    (neotree-dir (read-directory-name "Directory: ")))))
-
-(use-package emmet-mode
-  :ensure t
-  :hook ((html-mode . emmet-mode)
-	 (css-mode . emmet-mode))
-  :config
-  (setq emmet-indentation 2
-        emmet-indent-after-insert nil)
+  :defer t
+  :custom
+  (neo-window-width 25)
+  (neo-smart-open t)
+  (neo-theme 'ascii)
+  (neo-show-hidden-files nil)
+  (neo-auto-indent-point t)
   :bind
-  (:map emmet-mode-keymap
-        ([tab] . emmet-expand-line)
-        ("TAB" . emmet-expand-line)))
-
-(use-package lsp-mode
-  :hook ((css-mode
-	  js2-mode
-	  html-mode
-	  json-mode
-	  java-mode
-	  typescript-mode) . lsp-deferred)
-  :commands lsp lsp-deferred
-  :custom
-  (lsp-log-io nil)
-  (lsp-keep-workspace-alive nil)
-  (lsp-semantic-tokens-enable nil)
-  (lsp-session-file "~/.emacs.d/.lsp-session-v1")
-  
-  (lsp-enable-xref t)
-  (lsp-enable-links t)
-  (lsp-enable-imenu nil)
-  (lsp-enable-indentation nil)
-  (lsp-eldoc-enable-hover nil)
-  (lsp-enable-file-watchers nil)
-  (lsp-enable-symbol-highlighting t)
-  (lsp-enable-on-type-formatting nil)
-  (lsp-enable-text-document-color nil)
-  (lsp-enable-suggest-server-download t)
-
-  (lsp-ui-doc-enable nil)
-  (lsp-ui-sideline-delay 0)
-  (lsp-ui-sideline-show-hover nil)
-  (lsp-ui-sideline-update-mode 'line)
-  (lsp-ui-sideline-diagnostic-max-lines 20)
-  
-  (lsp-signature-auto-activate nil)
-  (lsp-signature-render-documentation nil)
-
-  (lsp-modeline-diagnostics-enable nil)
-  (lsp-modeline-code-actions-enable nil)
-  (lsp-modeline-workspace-status-enable nil)
-  
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-headerline-breadcrumb-icons-enable nil)
-  (lsp-headerline-breadcrumb-enable-diagnostics nil)
-  (lsp-headerline-breadcrumb-enable-symbol-numbers nil)
-  
-  (lsp-completion-show-kind t)
-  (lsp-completion-provider :none)
-  (lsp-diagnostics-provider :flycheck)
-  :init
-  (setq lsp-use-plists t))
-
-(use-package lsp-ui
-  :ensure t
-  :after lsp-mode
+  (("C-x n" . neotree-dir-prompt)
+   :map neotree-mode-map
+   ("n" . neotree-create-node)
+   ("d" . neotree-delete-node)
+   ("r" . neotree-rename-node)
+   ("c" . neotree-copy-node))
   :config
-  (setq lsp-ui-peek-enable t)
-  (define-key lsp-ui-mode-map (kbd "M-.") #'lsp-ui-peek-find-definitions)
-  (define-key lsp-ui-mode-map (kbd "M-?") #'lsp-ui-peek-find-references))
+  (defun neotree-dir-prompt ()
+    "Open neotree in a directory chosen by the user."
+    (interactive)
+    (neotree-dir (read-directory-name "Directory: "))))
 
-(defun lsp-booster--advice-json-parse (old-fn &rest args)
-  "Try to parse bytecode (OLD-FN ARGS) instead of JSON."
-  (or
-   (when (equal (following-char) ?#)
-     (let ((bytecode (read (current-buffer))))
-       (when (byte-code-function-p bytecode)
-         (funcall bytecode))))
-   (apply old-fn args)))
-
-(advice-add (if (progn (require 'json)
-                       (fboundp 'json-parse-buffer))
-                'json-parse-buffer
-              'json-read)
-            :around
-            #'lsp-booster--advice-json-parse)
-
-(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  "Prepend emacs-lsp-booster command (OLD-FN TEST?) to LSP CMD."
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)
-             (not (file-remote-p default-directory))
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))
-             (executable-find "emacs-lsp-booster"))
-        (progn
-          (when-let ((command-from-exec-path (executable-find (car orig-result))))
-            (setcar orig-result command-from-exec-path))
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" orig-result))
-      orig-result)))
-
-(advice-add 'lsp-resolve-final-command
-	    :around
-	    #'lsp-booster--advice-final-command)
-
-(use-package flycheck
+(use-package clojure-mode
   :ensure t
-  :hook (after-init . global-flycheck-mode)
+  :defer t
+  :mode (("\\.clj\\'" . clojure-mode)
+         ("\\.cljs\\'" . clojurescript-mode)
+         ("\\.cljc\\'" . clojurec-mode))
   :custom
-  (flycheck-help-echo-function nil)
-  (flycheck-display-errors-delay 0.0)
-  (flycheck-auto-display-errors-after-checking t))
+  (clojure-indent-style 'always-indent)
+  (clojure-align-forms-automatically t)
+  (clojure-toplevel-inside-comment-form t))
+
+(use-package eglot
+  :ensure t
+  :hook ((clojure-mode clojurec-mode clojurescript-mode) . eglot-ensure)
+  :custom
+  (eglot-autoshutdown t)
+  (eglot-events-buffer-size 0)
+  (eglot-extend-to-xref nil)
+  (eglot-sync-connect nil)
+  (eglot-connect-timeout 10)
+  (eglot-ignored-server-capabilities
+   '(:hoverProvider
+     :documentHighlightProvider
+     :documentFormattingProvider
+     :documentRangeFormattingProvider
+     :documentOnTypeFormattingProvider
+     :colorProvider
+     :foldingRangeProvider))
+  :config
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              (setq-local eldoc-documentation-functions
+                          (cons #'flymake-eldoc-function
+                                (remove #'flymake-eldoc-function
+                                        eldoc-documentation-functions)))  
+              (setq-local eldoc-documentation-strategy
+                          #'eldoc-documentation-compose-eagerly)))
+  (fset #'jsonrpc--log-event #'ignore))
+
+(use-package eglot-booster
+  :vc (:url "https://github.com/jdtsmith/eglot-booster")
+  :after eglot
+  :custom
+  (eglot-booster-io-only t)
+  :config
+  (eglot-booster-mode))
+
+(use-package cider
+  :ensure t
+  :defer t
+  :hook (cider-mode . (lambda ()
+                        (add-hook 'before-save-hook 'cider-format-buffer nil t)
+                        (remove-hook 'eldoc-documentation-functions #'cider-eldoc t)
+                        (setq-local eldoc-documentation-functions
+                                    (cons #'flymake-eldoc-function
+                                          (remove #'flymake-eldoc-function eldoc-documentation-functions)))
+                        (setq-local eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+                        (setq-local completion-at-point-functions
+                                    (remq #'cider-complete-at-point completion-at-point-functions))
+                        (fset 'cider-class-choice-completing-read (lambda () nil))))
+  :custom
+  (cider-repl-display-help-banner nil)
+  (cider-repl-pop-to-buffer-on-connect nil)
+  (cider-show-error-buffer 'only-in-repl)
+  (cider-font-lock-dynamically '(macro core function var))
+  (cider-eldoc-display-context nil)
+  (cider-use-xref t)
+  (cider-use-tooltips nil)
+  (cider-save-file-on-load t)
+  (cider-annotate-completion-candidates nil)
+  (cider-completion-annotations-alist nil)
+  (nrepl-hide-special-buffers t)
+  (nrepl-log-messages nil))
 ;;; config.el ends here
