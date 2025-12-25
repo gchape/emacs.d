@@ -24,6 +24,12 @@
           (lambda ()
             (setq gc-cons-threshold (* 20 1024 1024))))
 
+
+
+(set-face-attribute 'default nil
+		    :font "CommitMono Nerd Font"
+		    :height 105)
+
 (add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
 
 (require 'mod-ui)
@@ -46,6 +52,8 @@
  '(make-backup-files nil)
  '(menu-bar-mode nil)
  '(package-selected-packages nil)
+ '(package-vc-selected-packages
+   '((eglot-booster :url "https://github.com/jdtsmith/eglot-booster")))
  '(ring-bell-function 'ignore)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
