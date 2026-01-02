@@ -1,11 +1,11 @@
 *.elc
-
 .cask
-
 *~
 *.~undo-tree
-
 eln-cache/
 elpa/
 eshell/
 recentf
+projects
+transient/
+history.el
