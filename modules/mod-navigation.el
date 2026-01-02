@@ -1,4 +1,4 @@
-;;; mod-navigation.el --- File Navigation Configuration -*- lexical-binding: t; -*-
+;;; mod-navigation.el -- -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 (use-package neotree
@@ -22,13 +22,6 @@
     "Open neotree in a directory chosen by the user."
     (interactive)
     (neotree-dir (read-directory-name "Directory: "))))
-
-(use-package super-save
-  :ensure t
-  :hook (after-init . super-save-mode)
-  :custom
-  (super-save-auto-save-when-idle t)
-  (super-save-idle-duration 5))
 
 (provide 'mod-navigation)
 ;;; mod-navigation.el ends here

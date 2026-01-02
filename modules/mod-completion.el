@@ -1,4 +1,4 @@
-;;; mod-completion.el --- Completion Configuration -*- lexical-binding: t; -*-
+;;; mod-completion.el -- -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 (use-package vertico

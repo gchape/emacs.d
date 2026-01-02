@@ -1,4 +1,4 @@
-;;; mod-eglot.el --- Eglot Configuration -*- lexical-binding: t; -*-
+;;; mod-eglot.el -- -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 (use-package eglot

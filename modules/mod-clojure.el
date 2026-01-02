@@ -1,4 +1,4 @@
-;;; mod-clojure.el --- Clojure Development Configuration -*- lexical-binding: t; -*-
+;;; mod-clojure.el -- -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 (use-package clojure-mode

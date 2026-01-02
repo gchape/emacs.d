@@ -1,4 +1,4 @@
-;;; mod-ui.el --- UI Configuration Module -*- lexical-binding: t; -*-
+;;; mod-ui.el -- -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 (load-theme 'modus-operandi-deuteranopia t)

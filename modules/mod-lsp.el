@@ -1,4 +1,4 @@
-;;; mod-lsp.el --- LSP Mode Configuration -*- lexical-binding: t; -*-
+;;; mod-lsp.el -- -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 (use-package lsp-mode

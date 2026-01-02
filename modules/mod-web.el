@@ -1,4 +1,4 @@
-;;; mod-web.el --- Web Development Configuration -*- lexical-binding: t; -*-
+;;; mod-web.el -- -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 (use-package js2-mode
